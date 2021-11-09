@@ -2,55 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Author;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AuthorController extends Controller
 {
     public function index()
     {
-        $items = DB::select('select * from authors');
+        $items = Author::all();
         return view('index', ['items' => $items]);
     }
-    public function add()
+    public function find()
     {
-        return view('add');
+        return view('find', ['input' => '']);
     }
-    public function create(Request $request)
+    public function search(Request $request)
     {
+        $item = Author::where('name', 'LIKE', "%{$request->input}%")->first();
         $param = [
-            'name' => $request->name,
-            'age' => $request->age,
+            'input' => $request->input,
+            'item' => $item
         ];
-        DB::insert('insert into authors (name, age) values (:name, :age)', $param);
-        return redirect('/');
+        return view('find', $param);
     }
-    public function edit(Request $request)
+    public function bind(Author $author)
     {
-        $param = ['id' => $request->id];
-        $item = DB::select('select * from authors where id = :id', $param);
-        return view('edit', ['form' => $item[0]]);
-    }
-    public function update(Request $request)
-    {
-        $param = [
-            'id' => $request->id,
-            'name' => $request->name,
-            'age' => $request->age,
+        $data = [
+            'item' => $author,
         ];
-        DB::update('update authors set name =:name, age =:age where id =:id', $param);
-        return redirect('/');
+        return view('author.binds', $data);
     }
-    public function delete(Request $request)
+    public function relate(Request $request) //追記
     {
-        $param = ['id' => $request->id];
-        $item = DB::select('select * from authors where id = :id', $param);
-        return view('delete', ['form' => $item[0]]);
-    }
-    public function remove(Request $request)
-    {
-        $param = ['id' => $request->id];
-        DB::delete('delete from authors where id =:id', $param);
-        return redirect('/');
+        $items = Author::all();
+        return view('author.index', ['items' => $items]);
     }
 }

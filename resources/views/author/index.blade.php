@@ -16,17 +16,23 @@
     text-align: center;
   }
 </style>
-@section('title', 'index.blade.php')
+@section('title', 'author.index.blade.php')
 
 @section('content')
 <table>
   <tr>
-    <th>Data</th>
+    <th>Author</th>
+    <th>Book</th>
   </tr>
   @foreach ($items as $item)
   <tr>
     <td>
       {{$item->getDetail()}}
+    </td>
+    <td>
+      @if ($item->book != null)
+      {{ $item->book->getTitle() }}
+      @endif
     </td>
   </tr>
   @endforeach
