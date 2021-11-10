@@ -1,26 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\BookController; //追記
 
-use Illuminate\Http\Request;
-use App\Models\Book;
-
-class BookController extends Controller
-{
-    public function index(Request $request)
-    {
-        $items = Book::all();
-        return view('book.index', ['items' => $items]);
-    }
-    public function add(Request $request)
-    {
-        return view('book.add');
-    }
-    public function create(Request $request)
-    {
-        $this->validate($request, Book::$rules);
-        $form = $request->all();
-        Book::create($form);
-        return redirect('/book');
-    }
-}
+Route::prefix('book')->group(function () { //以下を追記
+    Route::get('/', [BookController::class, 'index']);
+    Route::get('/add', [BookController::class, 'add']);
+    Route::post('/add', [BookController::class, 'create']);
+});
